@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}EGInA - Database dotazioni{% endblock %}
+
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <div class="row mt-3">
+            <div class="col-12">
+                <h3>Aggiungi Movimento</h3>
+            </div>
+        </div>
+        <div class="row mt-3">
+            {{ form_start(form) }}
+            <div class="col-12">
+                <div class="row">
+                    <div class="col-4">
+                        {{ form_label(form.guest) }}
+                        {{ form_widget(form.guest) }}
+                    </div>
+                    <div class="col-4">
+                        {{ form_label(form.location) }}
+                        {{ form_widget(form.location ) }}
+                    </div>
+                    <div class="col-4">
+                        {{ form_label(form.motivation) }}
+                        {{ form_widget(form.motivation ) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        {{ form_label(form.status) }}
+                        {{ form_widget(form.status) }}
+                    </div>
+                    <div class="col-6">
+                        {{ form_row(form.dateBack) }}
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12 float-right">
+                        {{ form_widget(form.submit) }}
+                        {{ form_widget(form.reset) }}
+                    </div>
+                </div>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+{% endblock %}
+{% block stylesheets %}
+
+{% endblock %}

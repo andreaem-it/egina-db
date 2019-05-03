@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}EGInA - Database dotazioni{% endblock %}
+
+{% block body %}
+    {% if toast_message is defined %}
+        <div style="position: absolute; top: 0; right: 0;">
+            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <strong class="mr-auto">EGInA</strong>
+                    <small class="text-muted">now</small>
+                    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="toast-body">
+                    {{ toast_message }}
+                </div>
+            </div>
+        </div>
+        <script>
+            $('.toast').toast('show')
+        </script>
+    {% endif %}
+    <div class="container">
+        <div class="row mt-3">
+            <div class="col-11">
+                <h3>Lista Articoli</h3>
+            </div>
+            {% if is_granted('ROLE_ADMIN') %}
+            <div class="col-1">
+                <a href="{{ url('nuovo_articolo') }}" class="btn btn-success float-right btn-block"><i class="fa fa-plus"></i></a>
+            </div>
+            {% endif %}
+        </div>
+        <div class="row mt-3">
+            <table class="table table-hover">
+                <thead>
+                <tr class="text-center">
+                    <th scope="col">{% if pagination.isSorted('a.codice') %}<i class="fa fa-sort"></i> &nbsp;{% endif %}{{ knp_pagination_sortable(pagination, 'Codice', 'a.codice') }}</th>
+                    <th scope="col">{% if pagination.isSorted('a.type') %}<i class="fa fa-sort"></i> &nbsp;{% endif %}{{ knp_pagination_sortable(pagination, 'Tipo', 'a.type') }}</th>
+                    <th scope="col">{% if pagination.isSorted('a.name') %}<i class="fa fa-sort"></i> &nbsp;{% endif %}{{ knp_pagination_sortable(pagination, 'Nome', 'a.name') }}</th>
+                    <th scope="col">{% if pagination.isSorted('a.dateadd') %}<i class="fa fa-sort"></i> &nbsp;{% endif %}{{ knp_pagination_sortable(pagination, 'Data Aggiunta', 'a.dateadd') }}</th>
+                    <th scope="col">{% if pagination.isSorted('a.is_avaiable') %}<i class="fa fa-sort"></i> &nbsp;{% endif %}{{ knp_pagination_sortable(pagination, 'Stato', 'a.is_avaiable') }}</th>
+                    <th scope="col">Opzioni</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in pagination %}
+                    <tr>
+                        <td>{{ item.codice }}</td>
+                        <td>{{ fun.convertType(item.type) }}</td>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.dateAdd|date("d-m-Y") }}</td>
+                        <td>
+                            {% if item.isAvaiable == 1 %}
+                                <span class="badge badge-pill badge-success text-success">'</span>
+                            {% else %}
+                                <span class="badge badge-pill badge-danger text-danger">'</span>
+                            {% endif %}
+                        </td>
+                        <td width="150">
+                                <a href="{{ url('scheda_articolo', {'id' : item.id}) }}" class="btn btn-sm btn-success"><i class="fa fa-eye"></i></a>
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <a href="{{ url('modifica_articolo', {'id': item.id}) }}" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>
+                                <a href="{{ url('elimina_articolo', {'id': item.id}) }}" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <div class="navigation">
+                {{ knp_pagination_render(pagination) }}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

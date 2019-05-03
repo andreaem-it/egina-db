@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}EGInA - Database dotazioni{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row mt-3">
+            <div class="col-11">
+                <h3>Lista Prenotazioni</h3>
+            </div>
+            <div class="col-1">
+                <a href="{{ url('nuova_prenotazione') }}" class="btn btn-success float-right btn-block"><i class="fa fa-plus"></i></a>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <table class="table table-hover">
+                <thead>
+                <tr class="text-center">
+                    <th scope="col">{% if pagination.isSorted('a.date') %}<i class="fa fa-sort"></i> &nbsp;{% endif %}{{ knp_pagination_sortable(pagination, 'Data', 'a.date') }}</th>
+                    <th scope="col">{% if pagination.isSorted('a.user') %}<i class="fa fa-sort"></i> &nbsp;{% endif %}{{ knp_pagination_sortable(pagination, 'Utente', 'a.user') }}</th>
+                    <th scope="col">{% if pagination.isSorted('a.item') %}<i class="fa fa-sort"></i> &nbsp;{% endif %}{{ knp_pagination_sortable(pagination, 'Articolo', 'a.item') }}</th>
+                    <th scope="col">{% if pagination.isSorted('a.motivation') %}<i class="fa fa-sort"></i> &nbsp;{% endif %}{{ knp_pagination_sortable(pagination, 'Motivazione', 'a.motivation') }}</th>
+                    <th scope="col">Opzioni</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in pagination %}
+                    <tr>
+                        <td>{{ item.date|date("d-M-Y") }}</td>
+                        <td>{{ fun.convertClient(item.user) }}</td>
+                        <td>{{ fun.convertItem(item.item) }}</td>
+                        <td>{{ item.motivation }}</td>
+                        <td width="150">
+                            <a href="{{ url('scheda_articolo', {'id' : item.item}) }}" class="btn btn-sm btn-success"><i class="fa fa-eye"></i></a>
+                            <a href="{{ url('modifica_articolo', {'id': item.id}) }}" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>
+                            <a href="{{ url('elimina_articolo', {'id': item.id}) }}" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <div class="navigation">
+                {{ knp_pagination_render(pagination) }}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

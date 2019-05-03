@@ -1,0 +1,71 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">EGInA</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item {% if app.request.attributes.get('_route') == 'default' %}active{% endif %}">
+                <a class="nav-link" href="{{ url('default') }}">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item dropdown {% if app.request.attributes.get('_route') == 'lista_articoli' or app.request.attributes.get('_route') == 'nuovo_articolo' %}active{% endif %}">
+                <a class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Articoli
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="{{ url('lista_articoli') }}">Lista Articoli</a>
+                    {% if is_granted('ROLE_ADMIN') %}
+                    <a class="dropdown-item" href="{{ url('nuovo_articolo') }}">Nuovo Articolo</a>
+                    {% endif %}
+                </div>
+            </li>
+            <li class="nav-item dropdown {% if app.request.attributes.get('_route') == 'lista_prenotazioni' or app.request.attributes.get('_route') == 'nuova_prenotazione' %}active{% endif %}">
+                <a class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Prenotazioni
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="{{ url('lista_prenotazioni') }}">Lista Prenotazioni</a>
+                    <a class="dropdown-item" href="{{ url('nuova_prenotazione') }}">Nuova Prenotazione</a>
+                </div>
+            </li>
+            <li class="nav-item dropdown {% if app.request.attributes.get('_route') == 'lista_clienti' or app.request.attributes.get('_route') == 'nuovo_cliente' %}active{% endif %}">
+                <a class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Clienti
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="{{ url('lista_clienti') }}">Lista Clienti</a>
+                    <a class="dropdown-item" href="{{ url('nuovo_cliente') }}">Nuovo Cliente</a>
+                </div>
+            </li>
+            {% if is_granted('ROLE_ADMIN') %}
+            <li class="nav-item dropdown {% if app.request.attributes.get('_route') == 'warehouse' %}active{% endif %}">
+                <a class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Magazzino
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="{{ url('warehouse') }}">Lista Magazzino</a>
+                    <a class="dropdown-item" href="{{ url('warehouse') }}">Aggiungi a Magazzino</a>
+                </div>
+            </li>
+            {% endif %}
+        </ul>
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href=""></a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{ app.user.username|capitalize }}
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="">Profilo</a>
+                    <a class="dropdown-item" href="{{ path('logout') }}">Esci</a>
+                </div>
+            </li>
+            <li class="my-2 my-lg-0 nav-item {% if app.request.attributes.get('_route') == 'impostazioni' %}active{% endif %}">
+                <a class="nav-link" href="{{ url('impostazioni') }}" tabindex="-1" aria-disabled="true"><i class="fa fa-cogs"></i></a>
+            </li>
+        </ul>
+    </div>
+</nav>

@@ -1,0 +1,204 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}EGInA - Database dotazioni{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row mt-3">
+            <div class="col-10">
+                <h3>{{ item.name }}</h3>
+            </div>
+            <div class="col-2">
+                <a href="{{ url('modifica_articolo', {'id': item.id }) }}" class="btn btn-secondary float-right btn-block"><i class="fa fa-edit"></i> Modifica</a>
+            </div>
+        </div>
+        <div class="card mt-2">
+            <div class="card-body">
+                <div class="card-title">
+                    <h5>Dati Articolo</h5>
+                </div>
+                <div class="row">
+
+                    <div class="col-sm-2">
+                        <img class="img-fluid" src="data:image/png;base64,{{ barcode }}" />
+                    </div>
+                    <div class="col-sm-6">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td>Tipo</td>
+                                    <td>{{ fun.convertType(item.type) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Codice</td>
+                                    <td>{{ item.codice }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Nome</td>
+                                    <td>{{ item.name }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Descrizione</td>
+                                    <td>{{ item.descrizione }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Dotazione</td>
+                                    <td>{{ item.dotazioni }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Parti Danneggiate</td>
+                                    <td>{{ item.danni }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Stato</td>
+                                    <td>{% if item.isAvaiable == 1 %}
+                                            <span class="badge badge-pill badge-success text-success">'</span>&nbsp; In Magazzino
+                                        {% else %}
+                                            <span class="badge badge-pill badge-danger text-danger">'</span>&nbsp; Non in Magazzino
+                                        {% endif %}</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="row">
+                            <div id="calendar"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                Legenda:
+                                <span class="badge" style="background-color: #FF5733">Prestito</span>
+                                <span class="badge" style="background-color: #FFC300">Prenotazione</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% if delete %}
+            <div class="row mt-3">
+                <div class="col-12">
+                    <div class="alert alert-danger alert-dismissible fade show px-4 py-4" role="alert">
+                        Attenzione, vuoi eliminare questo Articolo? (L'azione non è reversibile)
+                        <a href="{{ url('elimina_articolo_conferma', {'id' : item.id }) }}" class="btn btn-danger btn-md float-right mt-0" style="position: relative;top: -8px;">Conferma eliminazione</a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+        <div class="row mt-3">
+            <div class="col-12">
+                <nav class="nav nav-pills flex-column flex-sm-row">
+                    <a class="flex-sm-fill text-sm-center nav-link active" href="#movimenti" data-toggle="tab" role="tab" aria-controls="movimenti" aria-selected="true">Movimenti</a>
+                    <a class="flex-sm-fill text-sm-center nav-link" href="#prenotazioni" data-toggle="tab" role="tab" aria-controls="prenotazioni" aria-selected="false">Prenotazioni</a>
+                </nav>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12">
+                <div class="tab-content">
+                    <div class="tab-pane active" id="movimenti" role="tabpanel" aria-labelledby="home-tab">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th scope="col">Data</th>
+                                <th scope="col">Rientro</th>
+                                <th scope="col">Utente</th>
+                                <th scope="col">Luogo</th>
+                                <th scope="col">Motivo</th>
+                                <th scope="col">Stato</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for line in pagination %}
+                                <tr>
+                                    <td>{{ line.date|date("d-m-Y h:i") }}</td>
+                                    <td>{{ line.dateBack|date("d-m-Y h:i") }}</td>
+                                    <td><a href="{{ url('mostra_cliente', {'id': line.guest}) }}">{{ fun.convertClient(line.guest) }}</a></td>
+                                    <td>{{ line.location }}</td>
+                                    <td>{{ line.motivation }}</td>
+                                    <td>
+                                        {% if line.status == 1 %}
+                                            <span class="badge badge-pill badge-success text-success">'</span>
+                                        {% else %}
+                                            <span class="badge badge-pill badge-danger text-danger">'</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="navigation">
+                            {{ knp_pagination_render(pagination) }}
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <a href="{{ url('aggiungi_movimento', {'id' : item.id}) }}" class="btn btn-success btn-block">
+                                    <i class="fa fa-plus"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="prenotazioni" role="tabpanel" aria-labelledby="profile-tab">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th scope="col">Data</th>
+                                <th scope="col">Rientro</th>
+                                <th scope="col">Utente</th>
+                                <th scope="col">Motivo</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for line in pagination2 %}
+                                <tr>
+                                    <td>{{ line.date|date("d-m-Y h:i") }}</td>
+                                    <td>{{ line.dateBack|date("d-m-Y h:i") }}</td>
+                                    <td><a href="{{ url('mostra_cliente', {'id': line.user}) }}">{{ fun.convertClient(line.user) }}</a></td>
+                                    <td>{{ line.motivation }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="navigation">
+                            {{ knp_pagination_render(pagination2) }}
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <a href="{{ url('nuova_prenotazione', {'id' : item.id}) }}" class="btn btn-success btn-block">
+                                    <i class="fa fa-plus"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+            <script>
+                $(function () {
+                    $('#myTab li:last-child a').tab('show')
+                })
+            </script>
+        {% endif %}
+    </div>
+
+{% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('assets/calendar/monthly.css') }}">
+{% endblock %}
+{% block javascripts %}
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script src="{{ asset('assets/calendar/monthly.js') }}"></script>
+    <script type="text/javascript">
+        $(window).load( function() {
+            $('#calendar').monthly({
+                mode: 'event',
+                dataType: 'json',
+                jsonUrl : '{{ url('json_avaiability', { 'id' : item.id }) }}',
+                weekdayNameFormat: "narrow",
+                stylePast: true,
+            });
+        });
+    </script>
+{% endblock %}
